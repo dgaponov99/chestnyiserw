@@ -1,0 +1,4 @@
+p5.aiogoldsrcrcon
+python-telegram-bot
+vk_api
+asyncio~=3.4.3
