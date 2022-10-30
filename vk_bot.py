@@ -4,6 +4,7 @@ import os
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 
 from source_query import SourceQuery
+from utils import get_top_players_message
 
 
 def main():
@@ -50,6 +51,8 @@ def main():
                             write_msg(event.object.message['peer_id'], s)
                         except Exception as e:
                             write_msg(event.object.message['peer_id'], 'Не могу соединиться с сервером &#128549;')
+                    elif event.object.message['text'].lower() == 'топ':
+                        write_msg(event.object.message['peer_id'], get_top_players_message())
         except:
             pass
 

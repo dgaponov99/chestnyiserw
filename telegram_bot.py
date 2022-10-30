@@ -5,6 +5,7 @@ from telegram import Update, ForceReply, ReplyMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 from source_query import SourceQuery
+from utils import get_top_players_message
 
 # Enable logging
 logging.basicConfig(
@@ -62,6 +63,8 @@ def echo(update: Update, context: CallbackContext) -> None:
             cry = u'\U0001F622'
             s = 'Не могу соединиться с сервером ' + cry
             update.message.reply_text(s, quote=False)
+    elif update.message.text.lower() == 'топ':
+        update.message.reply_text(get_top_players_message(), quote=False)
 
 
 def main() -> None:
