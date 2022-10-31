@@ -18,13 +18,12 @@ def main():
 
     def write_msg(peer_id, message):
         vk_session.method('messages.send',
-                          {'peer_id': peer_id, 'random_id': str(random.randint(1, 99999999)), 'message': message})
+                          {'peer_id': peer_id, 'random_id': str(random.randint(1, 4294967295)), 'message': message})
 
     while True:
         try:
             for event in longpoll.listen():
                 if event.type == VkBotEventType.MESSAGE_NEW:
-                    print(event)
                     if event.object.message['text'].lower() == 'сервер':
                         try:
                             query = SourceQuery('193.19.118.81', 27025)
