@@ -18,7 +18,7 @@ def main():
 
     def write_msg(peer_id, message):
         vk_session.method('messages.send',
-                          {'peer_id': peer_id, 'random_id': str(random.randint(1, 99999999)), 'message': message})
+                          {'peer_id': peer_id, 'random_id': str(random.randint(1, 4294967295)), 'message': message})
 
     while True:
         try:
@@ -44,7 +44,7 @@ def main():
                                 for player in players:
                                     s += "{id}. {Name}, фраги: {Frags}, время: {PrettyTime}".format(**player) + '\n'
                             else:
-                                s += 'Сервер пуст :('
+                                s += 'Сервер пуст &#128549;'
                             # print(s)
 
                             query.disconnect()
