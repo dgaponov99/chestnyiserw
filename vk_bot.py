@@ -44,7 +44,7 @@ def main():
                                 for player in players:
                                     s += "{id}. {Name}, фраги: {Frags}, время: {PrettyTime}".format(**player) + '\n'
                             else:
-                                s += 'Сервер пуст :('
+                                s += 'Сервер пуст &#128549;'
                             # print(s)
 
                             query.disconnect()

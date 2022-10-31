@@ -7,6 +7,8 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 from source_query import SourceQuery
 from utils import get_top_players_message
 
+emoji_cry = u'\U0001F622'
+
 # Enable logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
@@ -53,15 +55,14 @@ def echo(update: Update, context: CallbackContext) -> None:
                 for player in players:
                     s += "{id}\\. *{Name}*, фраги: {Frags}, время: {PrettyTime}".format(**player) + '\n'
             else:
-                s += 'Сервер пуст :\('
+                s += 'Сервер пуст ' + emoji_cry
             print(s)
 
             query.disconnect()
             update.message.reply_markdown_v2(s, quote=False)
         except Exception as e:
             print(e)
-            cry = u'\U0001F622'
-            s = 'Не могу соединиться с сервером ' + cry
+            s = 'Не могу соединиться с сервером ' + emoji_cry
             update.message.reply_text(s, quote=False)
     elif update.message.text.lower() == 'топ':
         update.message.reply_text(get_top_players_message(), quote=False)
