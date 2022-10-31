@@ -35,6 +35,7 @@ def help_command(update: Update, context: CallbackContext) -> None:
 
 def echo(update: Update, context: CallbackContext) -> None:
     """Echo the user message."""
+    print(update.message)
     if update.message.text.lower() == 'сервер':
         try:
             query = SourceQuery('193.19.118.81', 27025)
