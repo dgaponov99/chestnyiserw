@@ -53,7 +53,7 @@ def echo(update: Update, context: CallbackContext) -> None:
                 for player in players:
                     s += "{id}\\. *{Name}*, фраги: {Frags}, время: {PrettyTime}".format(**player) + '\n'
             else:
-                s += 'Сервер пуст :('
+                s += 'Сервер пуст :\('
             print(s)
 
             query.disconnect()
