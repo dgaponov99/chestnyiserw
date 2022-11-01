@@ -37,7 +37,7 @@ def main():
     longpoll = VkBotLongPoll(vk_session, 202422455)
 
     def get_name(id):
-        info = getting_api.users.get(user_ids=id)
+        info = getting_api.users.get(user_ids=id)[0]
         print(info)
         full_name = info.get('first_name') + ' ' + info['last_name']
         return full_name
