@@ -15,4 +15,4 @@ async def _coroutine(command):
 
 
 def send_command(command):
-    return asyncio.get_event_loop().run_until_complete(asyncio.wait_for(_coroutine(command), timeout=3))
+    return asyncio.new_event_loop().run_until_complete(asyncio.wait_for(_coroutine(command), timeout=3))
