@@ -36,8 +36,9 @@ def main():
 
     longpoll = VkBotLongPoll(vk_session, 202422455)
 
-    def get_name(from_id):
-        info = getting_api.users.get(user_ids=from_id)[0]
+    def get_name(id):
+        info = getting_api.users.get(user_ids=id)
+        print(info)
         full_name = info.get('first_name') + ' ' + info['last_name']
         return full_name
 
@@ -80,7 +81,9 @@ def main():
                         write_msg(get_top_players_message())
                     elif len(event.object.message['text'].strip()) > 5 and \
                             event.object.message['text'][:5].lower() == 'всем:':
+                        print('я тут')
                         message_to_server = event.object.message['text'][5:].strip()
+                        print(event.user_id)
                         name = get_name(event.user_id)
                         print('Отправляю сообщение...')
                         try:
