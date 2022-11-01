@@ -76,8 +76,9 @@ def echo(update: Update, context: CallbackContext) -> None:
         try:
             command = 'send_message_rcon "ТГ" "' + update.message.from_user.full_name + '" "' + message_to_server + '"'
             response = rcon_connect.send_command(command)
-            if response:
-                update.message.reply_text('Сообщение отправлено', quote=True)
+            print(response)
+            # if response:
+            #     update.message.reply_text('Сообщение отправлено', quote=True)
         except Exception as e:
             update.message.reply_text('Ошибка при отправке сообщения', quote=True)
             print(e)

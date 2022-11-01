@@ -3,6 +3,7 @@ import random
 import os
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 
+import rcon_connect
 from source_query import SourceQuery
 from utils import get_top_players_message
 
@@ -24,6 +25,7 @@ def main():
         try:
             for event in longpoll.listen():
                 if event.type == VkBotEventType.MESSAGE_NEW:
+                    print(event.object)
                     if event.object.message['text'].lower() == 'сервер':
                         try:
                             query = SourceQuery('193.19.118.81', 27025)
@@ -53,6 +55,18 @@ def main():
                             write_msg(event.object.message['peer_id'], 'Не могу соединиться с сервером &#128549;')
                     elif event.object.message['text'].lower() == 'топ':
                         write_msg(event.object.message['peer_id'], get_top_players_message())
+                    elif len(event.object.message['text'].strip()) > 5 and event.object.message['text'][:5] == 'всем:':
+                        message_to_server = event.object.message['text'][5:].strip()
+                        write_msg(event.object.message['peer_id'], 'Да да, скоро научусь...')
+                        # try:
+                        #     command = 'send_message_rcon "ТГ" "' + event.object.full_name + '" "' + message_to_server + '"'
+                        #     response = rcon_connect.send_command(command)
+                        #     print(response)
+                        #     if response:
+                        #         update.message.reply_text('Сообщение отправлено', quote=True)
+                        # except Exception as e:
+                        #     update.message.reply_text('Ошибка при отправке сообщения', quote=True)
+                        #     print(e)
         except:
             pass
 
