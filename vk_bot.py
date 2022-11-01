@@ -25,7 +25,7 @@ def main():
         try:
             for event in longpoll.listen():
                 if event.type == VkBotEventType.MESSAGE_NEW:
-                    print(event.object)
+                    print(event)
                     if event.object.message['text'].lower() == 'сервер':
                         try:
                             query = SourceQuery('193.19.118.81', 27025)
