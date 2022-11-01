@@ -83,8 +83,8 @@ def main():
                             event.object.message['text'][:5].lower() == 'всем:':
                         print('я тут')
                         message_to_server = event.object.message['text'][5:].strip()
-                        print(event.user_id)
                         name = get_name(event.object.message['from_id'])
+                        print(name)
                         print('Отправляю сообщение...')
                         try:
                             command = 'send_message_rcon "ТГ" "' + name + '" "' \
