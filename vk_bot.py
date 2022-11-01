@@ -86,10 +86,10 @@ def main():
                         print(name)
                         print('Отправляю сообщение...')
                         try:
-                            command = 'send_message_rcon "ТГ" "' + name + ' ' + lastname + '" "' \
+                            command = 'send_message_rcon "ВК" "' + name + ' ' + lastname + '" "' \
                                       + message_to_server + '"'
                             response = rcon_connect.send_command(command)
-                            telegram_bot_sendtext('[ВК] ' + name + ': ' + message_to_server)
+                            telegram_bot_sendtext('\\[ВК\\] ' + name + ': ' + message_to_server)
                             print(response)
                             if response:
                                 write_msg(name + ', твое сообщение отправлено')
