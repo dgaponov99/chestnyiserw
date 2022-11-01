@@ -39,8 +39,7 @@ def main():
     def get_name(id):
         info = getting_api.users.get(user_ids=id)[0]
         print(info)
-        full_name = info.get('first_name') + ' ' + info['last_name']
-        return full_name
+        return info.get('first_name'), info['last_name']
 
     getting_api = vk_session.get_api()
 
@@ -83,11 +82,11 @@ def main():
                             event.object.message['text'][:5].lower() == 'всем:':
                         print('я тут')
                         message_to_server = event.object.message['text'][5:].strip()
-                        name = get_name(event.object.message['from_id'])
+                        name, lastname = get_name(event.object.message['from_id'])
                         print(name)
                         print('Отправляю сообщение...')
                         try:
-                            command = 'send_message_rcon "ТГ" "' + name + '" "' \
+                            command = 'send_message_rcon "ТГ" "' + name + ' ' + lastname + '" "' \
                                       + message_to_server + '"'
                             response = rcon_connect.send_command(command)
                             telegram_bot_sendtext('[ВК] ' + name + ': ' + message_to_server)
