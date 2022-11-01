@@ -77,7 +77,7 @@ def main():
                             write_msg('Не могу соединиться с сервером &#128549;')
                     elif event.object.message['text'].lower() == 'топ':
                         write_msg(get_top_players_message())
-                    elif len(event.object.message['text'].strip()) > 5 and event.object.message['text'][:5] == 'всем:':
+                    elif len(event.object.message['text'].strip()) > 5 and event.object.message['text'][:5].lower() == 'всем:':
                         message_to_server = event.object.message['text'][5:].strip()
                         write_msg('Да да, скоро научусь...')
                         name = get_name(event.user_id)
