@@ -48,6 +48,7 @@ def main():
             for event in longpoll.listen():
                 if event.type == VkBotEventType.MESSAGE_NEW:
                     print(event)
+                    print(event.object.message['text'])
                     if event.object.message['text'].lower() == 'сервер':
                         try:
                             query = SourceQuery('193.19.118.81', 27025)
@@ -77,9 +78,11 @@ def main():
                             write_msg('Не могу соединиться с сервером &#128549;')
                     elif event.object.message['text'].lower() == 'топ':
                         write_msg(get_top_players_message())
-                    elif len(event.object.message['text'].strip()) > 5 and event.object.message['text'][:5].lower() == 'всем:':
+                    elif len(event.object.message['text'].strip()) > 5 and \
+                            event.object.message['text'][:5].lower() == 'всем:':
                         message_to_server = event.object.message['text'][5:].strip()
                         name = get_name(event.user_id)
+                        print('Отправляю сообщение...')
                         try:
                             command = 'send_message_rcon "ТГ" "' + name + '" "' \
                                       + message_to_server + '"'
