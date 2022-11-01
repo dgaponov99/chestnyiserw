@@ -7,19 +7,41 @@ import rcon_connect
 from source_query import SourceQuery
 from utils import get_top_players_message
 
+import requests
+
+
+def telegram_bot_sendtext(bot_message):
+    bot_token = os.environ['tg_token']
+    bot_chatID = '-1001753104086'
+    send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + bot_message
+
+    response = requests.get(send_text)
+
+    return response.json()
+
+
+vk_session = vk_api.VkApi(
+    token=os.environ['vk_token'])
+
+
+def write_msg(message, peer_id=2000000001):
+    vk_session.method('messages.send',
+                      {'peer_id': peer_id, 'random_id': str(random.randint(1, 4294967295)), 'message': message})
+
 
 def main():
     """ Пример использования bots longpoll
         https://vk.com/dev/bots_longpoll
     """
 
-    vk_session = vk_api.VkApi(
-        token=os.environ['vk_token'])
     longpoll = VkBotLongPoll(vk_session, 202422455)
 
-    def write_msg(peer_id, message):
-        vk_session.method('messages.send',
-                          {'peer_id': peer_id, 'random_id': str(random.randint(1, 4294967295)), 'message': message})
+    def get_name(from_id):
+        info = getting_api.users.get(user_ids=from_id)[0]
+        full_name = info.get('first_name') + ' ' + info['last_name']
+        return full_name
+
+    getting_api = vk_session.get_api()
 
     while True:
         try:
@@ -50,23 +72,26 @@ def main():
                             # print(s)
 
                             query.disconnect()
-                            write_msg(event.object.message['peer_id'], s)
+                            write_msg(s)
                         except Exception as e:
-                            write_msg(event.object.message['peer_id'], 'Не могу соединиться с сервером &#128549;')
+                            write_msg('Не могу соединиться с сервером &#128549;')
                     elif event.object.message['text'].lower() == 'топ':
-                        write_msg(event.object.message['peer_id'], get_top_players_message())
+                        write_msg(get_top_players_message())
                     elif len(event.object.message['text'].strip()) > 5 and event.object.message['text'][:5] == 'всем:':
                         message_to_server = event.object.message['text'][5:].strip()
-                        write_msg(event.object.message['peer_id'], 'Да да, скоро научусь...')
-                        # try:
-                        #     command = 'send_message_rcon "ТГ" "' + event.object.full_name + '" "' + message_to_server + '"'
-                        #     response = rcon_connect.send_command(command)
-                        #     print(response)
-                        #     if response:
-                        #         update.message.reply_text('Сообщение отправлено', quote=True)
-                        # except Exception as e:
-                        #     update.message.reply_text('Ошибка при отправке сообщения', quote=True)
-                        #     print(e)
+                        write_msg('Да да, скоро научусь...')
+                        name = get_name(event.user_id)
+                        try:
+                            command = 'send_message_rcon "ТГ" "' + name + '" "' \
+                                      + message_to_server + '"'
+                            response = rcon_connect.send_command(command)
+                            telegram_bot_sendtext('[ВК] ' + name + ': ' + message_to_server)
+                            print(response)
+                            if response:
+                                write_msg(name + ', твое сообщение отправлено')
+                        except Exception as e:
+                            write_msg(name + ', ошибка, сообщение не отправлено')
+                            print(e)
         except:
             pass
 

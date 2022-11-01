@@ -1,15 +1,14 @@
 import logging
 import os
 
-#https://api.vk.com/method/messages.send?access_token=vk1.a.0TVflx5sRYme5-buZhMYYoRezDy96ESDxKOBVlTPikEJcN4fyHhst-QZj0IGa_5fBtObTMsnaQTfXKxTqhNIpq2vOc3TAEdV6xuOH16FJYdiBHgkHuH6aBDAJSbTDjPeUGTpFfOhsxR16eiWRqBGQrSkfRvjkRBju9xUkrBd4Gwo11NxNubBwwFOaXcL4aPz7VEdPGi_8nOiQbkJUM6cMw&v=5.131&random_id=8&message=Все знают кто тут главный бот...&peer_id=2000000001
-#https://api.telegram.org/bot5691524154:AAGYDE1AxXxeOpffFKmvf_X6zMj4f09JhE0/sendmessage?chat_id=-1001753104086&text=Можно и Игорька на кукан посадить
-
 from telegram import Update, ForceReply, ReplyMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 import rcon_connect
 from source_query import SourceQuery
 from utils import get_top_players_message
+
+from vk_bot import write_msg
 
 emoji_cry = u'\U0001F622'
 
@@ -77,6 +76,8 @@ def echo(update: Update, context: CallbackContext) -> None:
             command = 'send_message_rcon "ТГ" "' + update.message.from_user.full_name + '" "' + message_to_server + '"'
             response = rcon_connect.send_command(command)
             print(response)
+            write_msg('[ТГ] ' + update.message.from_user.full_name + ': ' + message_to_server)
+
             # if response:
             #     update.message.reply_text('Сообщение отправлено', quote=True)
         except Exception as e:
