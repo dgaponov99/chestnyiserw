@@ -4,8 +4,11 @@ import os
 from telegram import Update, ForceReply, ReplyMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
+import rcon_connect
 from source_query import SourceQuery
 from utils import get_top_players_message
+
+from vk_bot import write_msg
 
 emoji_cry = u'\U0001F622'
 
@@ -35,6 +38,7 @@ def help_command(update: Update, context: CallbackContext) -> None:
 
 def echo(update: Update, context: CallbackContext) -> None:
     """Echo the user message."""
+    print(update.message)
     if update.message.text.lower() == 'сервер':
         try:
             query = SourceQuery('193.19.118.81', 27025)
@@ -66,6 +70,20 @@ def echo(update: Update, context: CallbackContext) -> None:
             update.message.reply_text(s, quote=False)
     elif update.message.text.lower() == 'топ':
         update.message.reply_text(get_top_players_message(), quote=False)
+    elif len(update.message.text.strip()) > 5 and update.message.text.lower()[:5] == 'всем:':
+        message_to_server = update.message.text[5:].strip()
+        try:
+            command = 'send_message_rcon "ТГ" "' + update.message.from_user.full_name + '" "' + message_to_server + '"'
+            response = rcon_connect.send_command(command)
+            print(response)
+            write_msg('[ТГ] ' + update.message.from_user.full_name + ': ' + message_to_server)
+
+            # if response:
+            #     update.message.reply_text('Сообщение отправлено', quote=True)
+        except Exception as e:
+            update.message.reply_text('Ошибка при отправке сообщения', quote=True)
+            print(e)
+
 
 
 def main() -> None:
@@ -80,7 +98,7 @@ def main() -> None:
     #dispatcher.add_handler(CommandHandler("start", start))
     #dispatcher.add_handler(CommandHandler("help", help_command))
 
-    # on non command i.e message - echo the message on Telegram
+    # on non command i.e. message - echo the message on Telegram
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo, edited_updates=False))
 
     # Start the Bot
