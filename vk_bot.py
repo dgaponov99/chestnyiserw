@@ -43,61 +43,64 @@ def main():
 
     getting_api = vk_session.get_api()
 
-    while True:
+    for event in longpoll.listen():
         try:
-            for event in longpoll.listen():
-                if event.type == VkBotEventType.MESSAGE_NEW:
-                    print(event)
-                    print(event.object.message['text'])
-                    if event.object.message['text'].lower() == 'сервер':
-                        try:
-                            query = SourceQuery('193.19.118.81', 27025)
+            if event.type == VkBotEventType.MESSAGE_NEW:
+                print(event)
 
-                            s = 'Информация о сервере:\n\n'
+                if event.object.message['peer_id'] != 2000000001:
+                    pass
 
-                            res = query.get_info()
-                            s += 'Название: ' + res['Hostname'] + '\n'
-                            s += 'Адрес сервера: 193.19.118.81:27025\n'
-                            s += 'Карта: ' + res['Map'] + '\n'
-                            s += 'Онлайн: ' + "%i/%i" % (res['Players'], res['MaxPlayers']) + '\n'
+                print(event.object.message['text'])
+                if event.object.message['text'].lower() == 'сервер':
+                    try:
+                        query = SourceQuery('193.19.118.81', 27025)
 
-                            s += '\n'
+                        s = 'Информация о сервере:\n\n'
 
-                            players = query.get_players()
-                            s += 'Игроки онлайн:\n'
-                            if len(players) > 0:
-                                for player in players:
-                                    s += "{id}. {Name}, фраги: {Frags}, время: {PrettyTime}".format(**player) + '\n'
-                            else:
-                                s += 'Сервер пуст &#128549;'
-                            # print(s)
+                        res = query.get_info()
+                        s += 'Название: ' + res['Hostname'] + '\n'
+                        s += 'Адрес сервера: 193.19.118.81:27025\n'
+                        s += 'Карта: ' + res['Map'] + '\n'
+                        s += 'Онлайн: ' + "%i/%i" % (res['Players'], res['MaxPlayers']) + '\n'
 
-                            query.disconnect()
-                            write_msg(s)
-                        except Exception as e:
-                            write_msg('Не могу соединиться с сервером &#128549;')
-                    elif event.object.message['text'].lower() == 'топ':
-                        write_msg(get_top_players_message())
-                    elif len(event.object.message['text'].strip()) > 5 and \
-                            event.object.message['text'][:5].lower() == 'всем:':
-                        print('я тут')
-                        message_to_server = event.object.message['text'][5:].strip()
-                        name, lastname = get_name(event.object.message['from_id'])
-                        print(name)
-                        print('Отправляю сообщение...')
-                        try:
-                            command = 'send_message_rcon "ВК" "' + name + ' ' + lastname + '" "' \
-                                      + message_to_server + '"'
-                            response = rcon_connect.send_command(command)
-                            telegram_bot_sendtext('\\[ВК] ' + name + ' ' + lastname + ': ' + message_to_server)
-                            print(response)
-                            if response:
-                                write_msg(name + ', твое сообщение отправлено')
-                        except Exception as e:
-                            write_msg(name + ', ошибка, сообщение не отправлено')
-                            print(e)
-        except:
-            pass
+                        s += '\n'
+
+                        players = query.get_players()
+                        s += 'Игроки онлайн:\n'
+                        if len(players) > 0:
+                            for player in players:
+                                s += "{id}. {Name}, фраги: {Frags}, время: {PrettyTime}".format(**player) + '\n'
+                        else:
+                            s += 'Сервер пуст &#128549;'
+                        # print(s)
+
+                        query.disconnect()
+                        write_msg(s)
+                    except Exception as e:
+                        write_msg('Не могу соединиться с сервером &#128549;')
+                elif event.object.message['text'].lower() == 'топ':
+                    write_msg(get_top_players_message())
+                elif len(event.object.message['text'].strip()) > 5 and \
+                        event.object.message['text'][:5].lower() == 'всем:':
+                    print('я тут')
+                    message_to_server = event.object.message['text'][5:].strip()
+                    name, lastname = get_name(event.object.message['from_id'])
+                    print(name)
+                    print('Отправляю сообщение...')
+                    try:
+                        command = 'send_message_rcon "ВК" "' + name + ' ' + lastname + '" "' \
+                                  + message_to_server + '"'
+                        response = rcon_connect.send_command(command)
+                        telegram_bot_sendtext('\\[ВК] ' + name + ' ' + lastname + ': ' + message_to_server)
+                        print(response)
+                        if response:
+                            write_msg(name + ', твое сообщение отправлено')
+                    except Exception as e:
+                        write_msg(name + ', ошибка, сообщение не отправлено')
+                        print(e)
+        except Exception as e:
+            print(e)
 
 
 if __name__ == "__main__":
