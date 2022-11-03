@@ -49,7 +49,7 @@ def main():
                 print(event)
 
                 if event.object.message['peer_id'] != 2000000001:
-                    pass
+                    continue
 
                 print(event.object.message['text'])
                 if event.object.message['text'].lower() == 'сервер':
