@@ -200,7 +200,7 @@ class SourceQuery(object):
                     player['Name'] = re.escape(player['Name']) \
                         .replace('=', '\\=').replace('!', '\\!') \
                         .replace('>', '\\>').replace('<', '\\<') \
-                        .replace('_', '\\_')
+                        .replace('_', '\\_').replace('`', '\\`')
                 result.append(player)
         except Exception:
             pass
