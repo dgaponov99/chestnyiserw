@@ -1,1 +1,0 @@
-app: python start.py

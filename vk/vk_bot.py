@@ -3,11 +3,13 @@ import random
 import os
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 
-import rcon_connect
-from source_query import SourceQuery
-from utils import get_top_players_message
+from rcon import rcon_connect
+from source_query.SourceQuery import SourceQuery
+from top import get_top_players_message
 
 import requests
+
+from vk import vk_session
 
 
 def telegram_bot_sendtext(bot_message):
@@ -20,8 +22,6 @@ def telegram_bot_sendtext(bot_message):
     return response.json()
 
 
-vk_session = vk_api.VkApi(
-    token=os.environ['vk_token'])
 
 
 def write_msg(message, peer_id=2000000001):
@@ -58,26 +58,7 @@ def main():
                         if event.object.message['text'].lower() == 'сервер':
                             try:
                                 query = SourceQuery('193.19.118.81', 27025)
-
-                                s = 'Информация о сервере:\n\n'
-
-                                res = query.get_info()
-                                s += 'Название: ' + res['Hostname'] + '\n'
-                                s += 'Адрес сервера: 193.19.118.81:27025\n'
-                                s += 'Карта: ' + res['Map'] + '\n'
-                                s += 'Онлайн: ' + "%i/%i" % (res['Players'], res['MaxPlayers']) + '\n'
-
-                                s += '\n'
-
-                                players = query.get_players()
-                                s += 'Игроки онлайн:\n'
-                                if len(players) > 0:
-                                    for player in players:
-                                        s += "{id}. {Name}, фраги: {Frags}, время: {PrettyTime}".format(**player) + '\n'
-                                else:
-                                    s += 'Сервер пуст &#128549;'
-                                # print(s)
-
+                                s = query.get_server()
                                 query.disconnect()
                                 write_msg(s)
                             except Exception as e:

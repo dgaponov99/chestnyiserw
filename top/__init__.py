@@ -1,4 +1,4 @@
-import my_sql
+from top import my_sql
 
 
 def get_top_players_message(is_markdown=False):

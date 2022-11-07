@@ -3,7 +3,7 @@ from mysql.connector import Error
 
 import os
 
-from player import Player
+from top.player import Player
 
 host = os.environ['db_host']
 user = os.environ['db_user']
