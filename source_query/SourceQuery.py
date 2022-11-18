@@ -66,6 +66,7 @@ class SourceQuery(object):
             for player in players:
                 if markdown_v2:
                     player['Name'] = markdown_v2_bold(player['Name'])
+                    player['Frags'] = markdown_v2_escape(player['Frags'])
                 s += str(player['id']) + (
                     "." if not markdown_v2 else "\\.") + " {Name}, фраги: {Frags}, время: {PrettyTime}".format(
                     **player) + '\n'
