@@ -1,14 +1,14 @@
 import logging
 import os
 
-from telegram import Update, ForceReply, ReplyMarkup
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram import Update, ForceReply
+from telegram.ext import Updater, MessageHandler, Filters, CallbackContext
 
-import rcon_connect
-from source_query import SourceQuery
-from utils import get_top_players_message
+from rcon import rcon_connect
+from source_query.SourceQuery import SourceQuery
+from top import get_top_players_message
 
-from vk_bot import write_msg
+from vk.vk_bot import write_msg
 
 emoji_cry = u'\U0001F622'
 
@@ -43,23 +43,7 @@ def echo(update: Update, context: CallbackContext) -> None:
         try:
             query = SourceQuery('193.19.118.81', 27025)
 
-            s = 'Информация о сервере:\n\n'
-
-            res = query.get_info()
-            s += 'Название: *' + res['Hostname'].replace('|', '\\|') + '*\n'
-            s += 'Адрес сервера: 193.19.118.81:27025\n'.replace('.', '\\.')
-            s += 'Карта: *' + res['Map'].replace('_', '\\_') + '*\n'
-            s += 'Онлайн: ' + "%i/%i" % (res['Players'], res['MaxPlayers']) + '\n'
-
-            s += '\n'
-
-            players = query.get_players(escape=True)
-            s += 'Игроки онлайн:\n'
-            if len(players) > 0:
-                for player in players:
-                    s += "{id}\\. *{Name}*, фраги: {Frags}, время: {PrettyTime}".format(**player) + '\n'
-            else:
-                s += 'Сервер пуст ' + emoji_cry
+            s = query.get_server(markdown_v2=True)
             print(s)
 
             query.disconnect()

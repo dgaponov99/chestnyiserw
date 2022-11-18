@@ -1,7 +1,7 @@
 import multiprocessing
 
-import vk_bot
-import telegram_bot
+from vk import vk_bot
+from tg import telegram_bot
 
 if __name__ == '__main__':
 

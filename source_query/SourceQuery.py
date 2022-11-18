@@ -6,7 +6,8 @@ import socket
 import struct
 import sys
 import time
-import re
+
+from tg.utils import markdown_v2_escape, markdown_v2_bold
 
 __author__ = 'Dasister'
 __site__ = 'http://21games.ru'
@@ -26,6 +27,7 @@ class SourceQuery(object):
     __challenge = None
 
     def __init__(self, addr, port=27015, timeout=5.0):
+        self.host = addr + ':' + str(port)
         self.ip, self.port, self.timeout = socket.gethostbyname(addr), port, timeout
         if sys.version_info >= (3, 0):
             self.is_third = True
@@ -46,6 +48,32 @@ class SourceQuery(object):
     def get_ping(self):
         """ Get ping to server """
         return self.get_info()['Ping']
+
+    def get_server(self, markdown_v2=False):
+        s = 'Информация о сервере:\n\n'
+
+        res = self.get_info()
+        s += 'Название: ' + (res['Hostname'] if not markdown_v2 else markdown_v2_bold(res['Hostname'])) + '\n'
+        s += 'Адрес сервера:' + (self.host if not markdown_v2 else markdown_v2_escape(self.host)) + '\n'
+        s += 'Карта: ' + (res['Map'] if not markdown_v2 else markdown_v2_bold(res['Map'])) + '\n'
+        s += 'Онлайн: ' + "%i/%i" % (res['Players'], res['MaxPlayers']) + '\n'
+
+        s += '\n'
+
+        players = self.get_players()
+        s += 'Игроки онлайн:\n'
+        if len(players) > 0:
+            for player in players:
+                if markdown_v2:
+                    player['Name'] = markdown_v2_bold(player['Name'])
+                    player['Frags'] = markdown_v2_escape(player['Frags'])
+                s += str(player['id']) + (
+                    "." if not markdown_v2 else "\\.") + " {Name}, фраги: {Frags}, время: {PrettyTime}".format(
+                    **player) + '\n'
+        else:
+            s += 'Сервер пуст ' + u'\U0001F622'
+
+        return s
 
     def get_info(self):
         """ Retrieves information about the server including, but not limited to: its name, the map currently being played, and the number of players. """
@@ -196,11 +224,6 @@ class SourceQuery(object):
                     player['PrettyTime'] = time.strftime('%H:%M:%S', ftime)
                 else:
                     player['PrettyTime'] = time.strftime('%M:%S', ftime)
-                if escape:
-                    player['Name'] = re.escape(player['Name']) \
-                        .replace('=', '\\=').replace('!', '\\!') \
-                        .replace('>', '\\>').replace('<', '\\<') \
-                        .replace('_', '\\_')
                 result.append(player)
         except Exception:
             pass
