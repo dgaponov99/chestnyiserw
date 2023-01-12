@@ -1,14 +1,9 @@
 import logging
-import os
 
 from telegram import Update, ForceReply
 from telegram.ext import Updater, MessageHandler, Filters, CallbackContext
 
-from rcon import rcon_connect
 from source_query.SourceQuery import SourceQuery
-from top import get_top_players_message
-
-from vk.vk_bot import write_msg
 
 emoji_cry = u'\U0001F622'
 
@@ -41,7 +36,7 @@ def echo(update: Update, context: CallbackContext) -> None:
     print(update.message)
     if update.message.text.lower() == 'сервер':
         try:
-            query = SourceQuery('193.19.118.81', 27025)
+            query = SourceQuery('37.230.137.233', 33333)
 
             s = query.get_server(markdown_v2=True)
             print(s)
@@ -52,28 +47,13 @@ def echo(update: Update, context: CallbackContext) -> None:
             print(e)
             s = 'Не могу соединиться с сервером ' + emoji_cry
             update.message.reply_text(s, quote=False)
-    elif update.message.text.lower() == 'топ':
-        update.message.reply_text(get_top_players_message(), quote=False)
-    elif len(update.message.text.strip()) > 5 and update.message.text.lower()[:5] == 'всем:':
-        message_to_server = update.message.text[5:].strip()
-        try:
-            command = 'send_message_rcon "ТГ" "' + update.message.from_user.full_name + '" "' + message_to_server + '"'
-            response = rcon_connect.send_command(command)
-            print(response)
-            write_msg('[ТГ] ' + update.message.from_user.full_name + ': ' + message_to_server)
-
-            # if response:
-            #     update.message.reply_text('Сообщение отправлено', quote=True)
-        except Exception as e:
-            update.message.reply_text('Ошибка при отправке сообщения', quote=True)
-            print(e)
 
 
 
 def main() -> None:
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
-    updater = Updater(os.environ['tg_token'])
+    updater = Updater(os.environ['tg_token_neuder'])
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher

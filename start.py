@@ -1,10 +1,6 @@
-import multiprocessing
-
-from vk import vk_bot
-from tg import telegram_bot
+from source_query.SourceQuery import SourceQuery
 
 if __name__ == '__main__':
-
-    multiprocessing.Process(target=vk_bot.main).start()
-    multiprocessing.Process(target=telegram_bot.main).start()
-
+    query = SourceQuery('37.230.137.233', 33333)
+    #query = SourceQuery('193.19.118.81', 27025)
+    print(query.get_server())
